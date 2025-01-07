@@ -13,13 +13,13 @@
     "build": "gulp build"
   },
   "author": {
-    "name": "Hakim El Hattab",
-    "email": "hakim.elhattab@gmail.com",
-    "web": "https://hakim.se"
+    "name": "Mahmoud Ali",
+    "email": "contactmahmoudali@gmail.com",
+    "web": "https://mahmoudsalah.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/hakimel/reveal.js.git"
+    "url": "git://github.com/mahmoudsalahmis/test-container-presentation.git" 
   },
   "engines": {
     "node": ">=18.0.0"
