@@ -1,40 +1,367 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>A Humble Approach to improve Testing - Mahmoud Ali</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/moon.css" />
+    <script
+      type="text/javascript"
+      src="https://cdn.canvasjs.com/canvasjs.min.js"
+    ></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        var levelOfTestingChart = new CanvasJS.Chart("level-of-testing", {
+          animationEnabled: true,
+          backgroundColor: "transparent",
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+          toolTip: {
+            content: "{label}", // Only show the label
+          },
+          data: [
+            {
+              type: "pyramid",
+              indexLabelFontColor: "#fff", // Set the color of the index labels
+              //valueRepresents: "area",
+              indexLabelFontSize: 20,
+              colo: "test",
+              dataPoints: [
+                {
+                  y: 30000,
+                  indexLabel: "Unit Testing",
+                  color: "#4071B0",
+                  label: "Tests individual components or units of code.",
+                },
+                {
+                  y: 30000,
+                  indexLabel: "Integration Testing",
+                  color: "#BEDF7A",
+                  exploded: true,
+                  label:
+                    "Tests the interactions between different components or modules.",
+                },
+                {
+                  y: 30000,
+                  indexLabel: "End to End Testing",
+                  color: "#CBC689",
+                  label: " Evaluates the complete system as a whole..",
+                },
+              ],
+            },
+          ],
+        });
+        levelOfTestingChart.render();
+      };
+    </script>
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h3>A Humble approach to improve testing</h3>
+          <h5>Mahmoud Ali</h5>
+          <div class="r-stack">
+            <img
+              src="./images/test-container-icon.png"
+              class="fragment current-visible"
+              data-fragment-index="2"
+              height="150"
+              width="150"
+            />
+          </div>
+        </section>
+        <section>
+          <h2>Why is testing important?</h2>
+          <ul>
+            <li data-fragment-index="1" class="fragment">Clean code 🧼</li>
+            <br />
+            <li data-fragment-index="2" class="fragment">Confidence 👌</li>
+            <br />
+            <li data-fragment-index="3" class="fragment">
+              Investment for future change 📈
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>The Test Pyramid</h2>
+          <div style="display: flex">
+            <div data-fragment-index="1" class="fragment">
+              <img src="./images/test-pyramid-left-arrow.png" />
+            </div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+            <div id="level-of-testing" style="height: 300px; width: 90%"></div>
+            <div data-fragment-index="2" class="fragment">
+              <img src="./images/test-pyramid-right-arrow.png" />
+            </div>
+          </div>
+        </section>
+        <section data-auto-animate>
+          <h2 data-id="code-title">Example of Unit Testing</h2>
+          <pre
+            data-id="code-animation"
+          ><code class="hlcsharp csharp" data-trim data-line-numbers="1-7|10-23|13-16|18-19|21-23"><script type="text/template">
+					
+            public class Calculator
+            {
+                public int Add(int a, int b)
+                {
+                    return a + b;
+                }
+            }
+            
+            // Somewhere else
+						[Test] 
+            public void Add_TwoPositiveNumbers_ReturnsCorrectSum()  ✅
+            {
+                // Arrange: Set up the data and objects we need
+                var sut = new Calculator();
+                int number1 = 3;
+                int number2 = 5;
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+                // Act: Call the method being tested
+                int result = sut.Add(number1, number2);
+
+                // Assert: Verify the result is correct
+                Assert.AreEqual(8, result); // We expect 3 + 5 to equal 8
+            }
+						
+					</script></code></pre>
+        </section>
+        <section data-auto-animate>
+          <h4 data-id="code-title">
+            Slightly More Complex Example of Unit Testing
+          </h4>
+          <pre
+            data-id="code-animation"
+          ><code class="hlcsharp csharp" data-trim data-line-numbers="1-5|6-14|16-26|30-37|39-40|42-47|51-59|60-61|63-68"><script type="text/template">
+					
+            public interface IEngine
+            {
+                bool Start();
+            }
+            
+            public class Vehicle
+            {
+                private readonly IEngine _engine;
+                public bool IsRunning { get; private set; } = false;
+            
+                public Vehicle(IEngine engine)
+                {
+                    _engine = engine;
+                }
+              
+                public bool Start()
+                {
+                    if (_engine.Start())
+                    {
+                        IsRunning = true; // Update the status if the engine starts successfully
+                        // Do more stuff
+                        return true;
+                    }
+                  
+                    return false;
+                }
+            }
+
+            // Somewhere else
+						[Test] 
+            public void Start_WhenEngineStarts_VehicleSetsIsRunningToTrue()
+            {
+                // Arrange: Set up mock engine
+                var mockEngine = new Mock<IEngine>();
+                mockEngine.Setup(engine => engine.Start()).Returns(true); // Engine starts successfully
+                
+                var sut = new Vehicle(mockEngine.Object);
+                
+                // Act: Call the Start method on the Vehicle
+                var result = sut.Start();
+                
+                // Assert: Verify the vehicle starts successfully
+                Assert.IsTrue(result);
+                Assert.IsTrue(sut.IsRunning); // Verify the IsRunning flag is set to true
+                
+                // Verify: Ensure the engine's Start method was called once
+                mockEngine.Verify(engine => engine.Start(), Times.Once);
+            }
+						
+
+            [Test]
+            public void Start_WhenEngineFails_VehicleDoesNotSetIsRunning()
+            {
+                // Arrange: Set up mock engine
+                var mockEngine = new Mock<IEngine>();
+                mockEngine.Setup(engine => engine.Start()).Returns(false); // Engine fails to start
+        
+                var sut = new Vehicle(mockEngine.Object);
+        
+                // Act: Call the Start method on the Vehicle
+                var result = sut.Start();
+        
+                // Assert: Verify the vehicle does not start successfully
+                Assert.IsFalse(result);
+                Assert.IsFalse(sut.IsRunning); // Verify the IsRunning flag remains false
+        
+                // Verify: Ensure the engine's Start method was called once
+                mockEngine.Verify(engine => engine.Start(), Times.Once);
+            }
+					</script></code></pre>
+        </section>
+        <section data-auto-animate>
+          <h2>What about integration testing?</h2>
+          <p>Mock</p>
+        </section>
+        <section data-auto-animate>
+          <h2>What about integration testing?</h2>
+          <p>Mock</p>
+          or
+          <p>Real Infrastructure</p>
+        </section>
+        <section data-auto-animate>
+          <h2>What about integration testing?</h2>
+          <p>Real Infrastructure 🎉</p>
+        </section>
+        <section style="background-color: white">
+          <iframe
+            data-preload
+            width="100%"
+            height="500px"
+            data-src="https://testcontainers.com/"
+          >
+          </iframe>
+        </section>
+        <section data-auto-animate>
+          <h2>Integration rather than Simulation</h2>
+        </section>
+        <section>
+          <p>TestContainers workflow</p>
+          <img src="./images/test-workflow.png" />
+        </section>
+        <section>
+          <h2>Why not use docker-compose?</h2>
+          <ul>
+            <li data-fragment-index="1" class="fragment">
+              Dynamic resource management 🧑‍💻️
+            </li>
+            <br />
+            <li data-fragment-index="2" class="fragment">Better Cleanup 🧹</li>
+            <br />
+            <li data-fragment-index="3" class="fragment">
+              Speed and Efficiency 📈
+            </li>
+          </ul>
+        </section>
+        <section data-auto-animate>
+          <img width="30%" src="./images/demo-time.gif" />
+        </section>
+        <section>
+          <h2>Useful usages of Testcontainers</h2>
+
+          <h4>Compatibility testing</h4>
+          <pre
+            data-id="code-animation"
+          ><code class="hlcsharp csharp" data-trim data-line-numbers="1-4|1-8|1-11"><script type="text/template">
+        
+            var postgres16 = new PostgreSqlBuilder()
+                .WithImage("postgres:16")
+                .Build();
+
+            var postgres15 = new PostgreSqlBuilder()
+                .WithImage("postgres:15")
+                .Build();
+
+            var postgres14 = new PostgreSqlBuilder()
+                .WithImage("postgres:14")
+                .Build();
+          
+        </script></code></pre>
+        </section>
+
+        <section>
+          <h2>Underrated containers</h2>
+
+          <h4>Mock External API</h4>
+          <iframe
+            style="background-color: white"
+            data-preload
+            width="100%"
+            height="500px"
+            data-src="https://testcontainers.com/modules/wiremock/"
+          ></iframe>
+        </section>
+        <section>
+          <h2>Underrated containers</h2>
+
+          <h4>Cloud Resources</h4>
+          <iframe
+            style="background-color: white"
+            data-preload
+            width="100%"
+            height="500px"
+            data-src="https://testcontainers.com/modules/localstack/"
+          ></iframe>
+        </section>
+        <section>
+          <h2>Recommended Practices</h2>
+          <ul>
+            <li data-fragment-index="1" class="fragment">
+              Avoid assigning static names
+            </li>
+            <br />
+            <li data-fragment-index="2" class="fragment">
+              Avoid assigning static ports
+            </li>
+            <br />
+            <li data-fragment-index="3" class="fragment">
+              Avoid using localhost or 127.0.0.1
+            </li>
+            <br />
+            <li data-fragment-index="4" class="fragment">
+              Don't disable Resource Reaper (Ryuk)
+            </li>
+            <br />
+            <li data-fragment-index="4" class="fragment">
+              Ensure that the image version is overriden
+              <pre data-id="code-animation">
+              <code class="hlcsharp csharp"
+                ><script type="text/template">
+  builder.WithImage("alpine:3.20.0")
+                </script></code>
+                </pre>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <img
+            src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnZhbGloOGl0MHFvMjh6NjJscDJsaG5udGI5NDl6dWNob3RldHRueiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/T6dfeV8T2gqOAhthAt/giphy.webp"
+          />
+        </section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        slideNumber: "c/t",
+        showSlideNumber: "all",
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
